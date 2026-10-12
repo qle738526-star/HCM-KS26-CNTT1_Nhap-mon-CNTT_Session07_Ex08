@@ -1,0 +1,15 @@
+Phần 1: Phân tích lỗi
+Nguyên nhân: Cả 3 dòng trong script đều dùng Out-File mà không có tham số -Append. Mặc định lệnh này thực hiện ghi đè, xóa sạch dữ liệu trước đó.
+
+Hậu quả: Sau mỗi lần chạy, file weekly_errors.txt bị xóa trắng và chỉ giữ lại đúng dòng kết thúc của lần chạy gần nhất, làm mất toàn bộ lịch sử trước đó.
+
+Phần 2: Sửa lỗi & So sánh
+1. Script đã sửa (Thêm -Append)
+PowerShell
+[$(Get-Date)] --- Bat dau quet --- | Out-File weekly_errors.txt -Append
+Select-String -Path app.log -Pattern "error" | Out-File weekly_errors.txt -Append
+[$(Get-Date)] --- Ket thuc quet --- | Out-File weekly_errors.txt -Append
+2. So sánh cơ chế
+Out-File (Mặc định): Ghi đè, xóa sạch nội dung cũ để thay thế bằng dữ liệu mới. Thường dùng khi tạo mới file báo cáo từ đầu.
+
+Out-File -Append: Ghi nối, giữ nguyên nội dung cũ và nối thêm dữ liệu mới vào cuối file. Dùng để cộng dồn log theo thời gian.
